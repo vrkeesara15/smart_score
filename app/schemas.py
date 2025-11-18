@@ -56,7 +56,22 @@ class QuestionCreate(QuestionBase):
 
 class QuestionRead(QuestionBase):
     id: UUID
-    exam: Optional[ExamRead] = None
+    exam_id: UUID
+
+
+class RubricBase(ORMBaseModel):
+    key_points: Dict[str, Any]
+    marking_scheme: Dict[str, Any]
+    strictness: str
+
+
+class RubricCreate(RubricBase):
+    pass
+
+
+class RubricRead(RubricBase):
+    id: UUID
+    question_id: UUID
 
 
 class SubmissionBase(ORMBaseModel):
