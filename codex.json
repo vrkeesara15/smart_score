@@ -1,0 +1,13 @@
+{
+  "projectName": "ai-exam-auto-correction",
+  "language": "python",
+  "backend": "fastapi",
+  "frontend": "react",
+  "needs": {
+    "ocr_pipeline": true,
+    "ai_scorer": true,
+    "database": true,
+    "docker": true,
+    "ui": true
+  }
+}
