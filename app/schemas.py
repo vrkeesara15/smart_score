@@ -1,0 +1,93 @@
+from __future__ import annotations
+
+from datetime import datetime
+from typing import Any, Dict, Literal, Optional
+from uuid import UUID
+
+from pydantic import BaseModel, EmailStr
+
+
+class ORMBaseModel(BaseModel):
+    class Config:
+        orm_mode = True
+
+
+class UserBase(ORMBaseModel):
+    name: str
+    email: EmailStr
+    role: Literal["teacher", "student", "admin"]
+
+
+class UserCreate(UserBase):
+    pass
+
+
+class UserRead(UserBase):
+    id: UUID
+    created_at: datetime
+
+
+class ExamBase(ORMBaseModel):
+    title: str
+    description: Optional[str] = None
+
+
+class ExamCreate(ExamBase):
+    created_by_id: UUID
+
+
+class ExamRead(ExamBase):
+    id: UUID
+    created_at: datetime
+    created_by: Optional[UserRead] = None
+
+
+class QuestionBase(ORMBaseModel):
+    exam_id: UUID
+    question_number: int
+    type: Literal["mcq", "blank", "short", "long", "diagram", "math", "code"]
+    marks: int
+    text: str
+
+
+class QuestionCreate(QuestionBase):
+    pass
+
+
+class QuestionRead(QuestionBase):
+    id: UUID
+    exam: Optional[ExamRead] = None
+
+
+class SubmissionBase(ORMBaseModel):
+    exam_id: UUID
+    student_id: UUID
+
+
+class SubmissionCreate(SubmissionBase):
+    pass
+
+
+class SubmissionRead(SubmissionBase):
+    id: UUID
+    uploaded_at: datetime
+    total_marks: Optional[float] = None
+    exam: Optional[ExamRead] = None
+
+
+class AnswerBase(ORMBaseModel):
+    submission_id: UUID
+    question_id: UUID
+    content: str
+    marks_awarded: Optional[float] = None
+    evaluation_data: Optional[Dict[str, Any]] = None
+
+
+class AnswerCreate(AnswerBase):
+    pass
+
+
+class AnswerRead(AnswerBase):
+    id: UUID
+    submission: Optional[SubmissionRead] = None
+    question: Optional[QuestionRead] = None
