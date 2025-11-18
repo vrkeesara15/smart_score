@@ -37,12 +37,3 @@ def _ensure_engine() -> None:
 async def get_session() -> AsyncIterator[AsyncSession]:
     _ensure_engine()
     assert AsyncSessionLocal is not None  # for type-checkers
-    async with AsyncSessionLocal() as session:
-        yield session
-
-
-async def init_db() -> None:
-    _ensure_engine()
-    assert engine is not None  # for type-checkers
-    async with engine.begin() as conn:
-        await conn.run_sync(Base.metadata.create_all)

@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from datetime import datetime
-from typing import Any, Dict, Optional
+from typing import Any, Dict, Literal, Optional
 from uuid import UUID
 
 from pydantic import BaseModel, EmailStr
@@ -15,7 +15,7 @@ class ORMBaseModel(BaseModel):
 class UserBase(ORMBaseModel):
     name: str
     email: EmailStr
-    role: str
+    role: Literal["teacher", "student", "admin"]
 
 
 class UserCreate(UserBase):
@@ -33,18 +33,19 @@ class ExamBase(ORMBaseModel):
 
 
 class ExamCreate(ExamBase):
-    created_by: UUID
+    created_by_id: UUID
 
 
 class ExamRead(ExamBase):
     id: UUID
     created_at: datetime
-    created_by: UUID
+    created_by: Optional[UserRead] = None
 
 
 class QuestionBase(ORMBaseModel):
+    exam_id: UUID
     question_number: int
-    type: str
+    type: Literal["mcq", "blank", "short", "long", "diagram", "math", "code"]
     marks: int
     text: str
 
